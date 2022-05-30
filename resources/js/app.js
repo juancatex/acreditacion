@@ -8,7 +8,11 @@ require('./bootstrap');
 
 window.Vue = require('vue').default;
  
+import Vue from 'vue';
+import VueSweetalert2 from 'vue-sweetalert2'; 
+import 'sweetalert2/src/sweetalert2.scss';
 
+Vue.use(VueSweetalert2);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

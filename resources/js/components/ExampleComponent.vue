@@ -85,6 +85,14 @@
                 console.log(this.foto instanceof File);
             },
             onacreditar(){ 
+                Vue.swal({
+                title: "Registrando acreditación",
+                allowOutsideClick: () => false,
+                allowEscapeKey: () => false,
+                didOpen: () => {
+                   Vue.swal.showLoading() 
+                }
+            }); 
                 const config = {
                     headers: { 'content-type': 'multipart/form-data' }
                 } 
@@ -99,11 +107,28 @@
                 formData.append('ciext', this.ciext); 
    
                 axios.post('/upimage', formData, config)
-                .then(function (response) {
-                   console.log("response:",response);
+                .then(function (response) { 
+                   Vue.swal({
+                       icon: 'success',
+                       title: 'Registro exitoso',
+                       allowOutsideClick: () => false,
+                       allowEscapeKey: () => false,
+                   }).then((result) => {
+                       window.location.reload(true);
+                   })
+                //    
                 })
                 .catch(function (error) {
                     console.log("error:",error);
+                     Vue.swal({
+                       icon: 'error',
+                       title: 'Error de registro',
+                       text: error,
+                       allowOutsideClick: () => false,
+                       allowEscapeKey: () => false,
+                   }).then((result) => {
+                       window.location.reload(true);
+                   })
                 });
             }
         },
@@ -116,6 +141,8 @@
                &&this.grado.length>0
                &&(this.foto instanceof File));
            }
-        }
+        },
+        mounted(){ 
+}
     }
 </script>

@@ -5468,7 +5468,8 @@ __webpack_require__.r(__webpack_exports__);
       });
       var config = {
         headers: {
-          'content-type': 'multipart/form-data'
+          'content-type': 'multipart/form-data',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
       };
       var formData = new FormData();

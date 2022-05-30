@@ -94,8 +94,7 @@
                 }
             }); 
                 const config = {
-                    headers: { 'content-type': 'multipart/form-data',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')} 
+                    headers: { 'content-type': 'multipart/form-data' } 
                 } 
                 let formData = new FormData();
                 formData.append('file', this.foto);
@@ -105,7 +104,7 @@
                 formData.append('apaterno', this.apaterno);
                 formData.append('amaterno', this.amaterno);
                 formData.append('ci', this.ci);
-                formData.append('ciext', this.ciext);   
+                formData.append('ciext', this.ciext); 
    
                 axios.post('/upimage', formData, config)
                 .then(function (response) { 

@@ -117,5 +117,24 @@ label{
             @yield('content')
         </main>
     </div>
+    <script src="js/jquery.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.6/firebase-storage.js"></script>
+    <script>
+        
+        var firebaseConfig = {
+            apiKey: "AIzaSyDr8bXp3nImPxjx9CaA53rD111-eh93skg",
+            authDomain: "notifi-b4868.firebaseapp.com",
+            databaseURL: "https://notifi-b4868.firebaseio.com",
+            projectId: "notifi-b4868",
+            storageBucket: "notifi-b4868.appspot.com",
+            messagingSenderId: "846106323511",
+            appId: "1:846106323511:web:1bea42013bcf12dc18edb2",
+            measurementId: "G-K7HSGC0QSS"
+        };
+
+        firebase.initializeApp(firebaseConfig); 
+        window.storage = firebase.storage();
+    </script>
 </body>
 </html>

@@ -34,11 +34,11 @@ class HomeController extends Controller
         // $fileName = time().'.'.$request->file->getClientOriginalExtension();
         // $request->file->move(public_path('upload'), $fileName);
 
-        $fileName = Str::random(15);
-        $fileName.='.jpg'; 
-        $fotoin = substr($request->foto, strpos($request->foto, ',') + 1); 
-        $fotoin = base64_decode($fotoin); 
-        Storage::put('public/socio/'.$fileName, $fotoin);
+        // $fileName = Str::random(15);
+        // $fileName.='.jpg'; 
+        // $fotoin = substr($request->foto, strpos($request->foto, ',') + 1); 
+        // $fotoin = base64_decode($fotoin); 
+        // Storage::put('public/socio/'.$fileName, $fotoin);
  
         $directory="public/datos";
         Storage::makeDirectory($directory); 
@@ -50,7 +50,8 @@ class HomeController extends Controller
         .';'.$request->amaterno
         .';'.$request->ci
         .';'.$request->ciext
-        .';'.$fileName);
+        .';'.$request->foto
+        .';'.$request->ruta);
         Auth::logout(); 
         return response()->json(array('msg' =>"ok"), 200);
     }

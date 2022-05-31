@@ -5445,7 +5445,8 @@ __webpack_require__.r(__webpack_exports__);
       amaterno: "",
       ci: 0,
       ciext: "LP",
-      foto: ""
+      foto: "",
+      referencia: null
     };
   },
   methods: {
@@ -5467,7 +5468,8 @@ __webpack_require__.r(__webpack_exports__);
     formSubmit: function formSubmit(e) {
       e.preventDefault();
       Vue.swal({
-        title: "Registrando acreditación",
+        title: "Subiendo fotografia",
+        html: '<div class="progress"><div id="save" class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" style="width: 0%;" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">0%</div></div> <span id="text_saving" style="font-size: 13px;"></span>',
         allowOutsideClick: function allowOutsideClick() {
           return false;
         },
@@ -5478,24 +5480,58 @@ __webpack_require__.r(__webpack_exports__);
           Vue.swal.showLoading();
         }
       });
-      var me = this;
-      var reader = new FileReader();
+      var me = this; //    var reader = new FileReader();
+      //     reader.onload = function(event) {  
+      //     me.saveinfo(event.target.result);
+      //     }
+      //     reader.readAsDataURL(this.foto); 
 
-      reader.onload = function (event) {
-        me.saveinfo(event.target.result);
-      };
-
-      reader.readAsDataURL(this.foto);
+      this.cargarfoto(this.foto);
     },
-    saveinfo: function saveinfo(foto) {
-      // formData.append('fuerza', this.fuerza);
-      // formData.append('grado', this.grado);
-      // formData.append('nombres', this.nombres);
-      // formData.append('apaterno', this.apaterno);
-      // formData.append('amaterno', this.amaterno);
-      // formData.append('ci', this.ci);
-      // formData.append('ciext', this.ciext); 
+    cargarfoto: function cargarfoto(file) {
+      var me = this;
+      var namefoto = Math.floor(Math.random() * 100000000000);
+      var uploadTask = this.referencia.child('img' + namefoto + '.png').put(file);
+      uploadTask.on('state_changed', function (snapshot) {
+        var progress = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+        $('.progress-bar[id="save"]').css('width', parseInt(progress) + '%').attr('aria-valuenow', parseInt(progress)).text(parseInt(progress) + '%');
+      }, function (error) {
+        console.log("error", error);
+        Vue.swal({
+          icon: 'error',
+          title: 'Error de registro',
+          text: error,
+          allowOutsideClick: function allowOutsideClick() {
+            return false;
+          },
+          allowEscapeKey: function allowEscapeKey() {
+            return false;
+          }
+        }).then(function (result) {
+          window.location.reload(true);
+        });
+      }, function () {
+        Vue.swal({
+          title: "Registrando acreditación",
+          allowOutsideClick: function allowOutsideClick() {
+            return false;
+          },
+          allowEscapeKey: function allowEscapeKey() {
+            return false;
+          },
+          didOpen: function didOpen() {
+            Vue.swal.showLoading();
+          }
+        });
+        uploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+          console.log('File available at', downloadURL);
+          me.saveinfo('img' + namefoto + '.png', downloadURL);
+        });
+      });
+    },
+    saveinfo: function saveinfo(foto, ruta) {
       axios.post('/upimage', {
+        ruta: ruta,
         foto: foto,
         fuerza: this.fuerza,
         grado: this.grado,
@@ -5540,7 +5576,9 @@ __webpack_require__.r(__webpack_exports__);
       return this.amaterno.length > 0 && this.apaterno.length > 0 && this.ci > 0 && this.nombres.length > 0 && this.grado.length > 0 && this.foto instanceof File;
     }
   },
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    this.referencia = window.storage.ref();
+  }
 });
 
 /***/ }),

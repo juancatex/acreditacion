@@ -39,11 +39,19 @@ class HomeController extends Controller
         $fotoin = substr($request->foto, strpos($request->foto, ',') + 1); 
         $fotoin = base64_decode($fotoin); 
         Storage::put('public/socio/'.$fileName, $fotoin);
-
-        $directory="Socios";
+ 
+        $directory="public/datos";
         Storage::makeDirectory($directory); 
-        Storage::append($directory.'/socio.csv',date("Y-m-d H:i:s").';prueba;'.$fileName);
+        Storage::append($directory.'/socio.csv',date("Y-m-d H:i:s")
+        .';'.$request->fuerza
+        .';'.$request->grado
+        .';'.$request->nombres
+        .';'.$request->apaterno
+        .';'.$request->amaterno
+        .';'.$request->ci
+        .';'.$request->ciext
+        .';'.$fileName);
         Auth::logout(); 
-        return response()->json(array('msg' =>"f"), 200);
+        return response()->json(array('msg' =>"ok"), 200);
     }
 }

@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $user = new \App\Models\User(); 
-        $user->name = 'ascinalss';  //es el admin
-        $user->email = 'user@example.com';
+        $user->name = 'REUNION NACIONAL';  //es el admin
+        $user->email = 'reunion@ascinalss.org';
         $user->password = bcrypt('ascinalss');
         $user->save();
     }

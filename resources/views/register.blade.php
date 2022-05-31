@@ -114,7 +114,7 @@ label{
 <body>
     <div id="app"> 
         <main class="py-4">
-            @yield('content')
+            @yield('contentacre')
         </main>
     </div>
     <script src="js/jquery.js" defer></script>

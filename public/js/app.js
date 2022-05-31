@@ -5465,7 +5465,7 @@ __webpack_require__.r(__webpack_exports__);
     onfilefoto: function onfilefoto() {
       this.foto = this.$refs.fileon.files[0];
     },
-    formSubmit: function formSubmit(e) {
+    formSubmitfirebase: function formSubmitfirebase(e) {
       e.preventDefault();
       Vue.swal({
         title: "Subiendo fotografia",
@@ -5480,12 +5480,7 @@ __webpack_require__.r(__webpack_exports__);
           Vue.swal.showLoading();
         }
       });
-      var me = this; //    var reader = new FileReader();
-      //     reader.onload = function(event) {  
-      //     me.saveinfo(event.target.result);
-      //     }
-      //     reader.readAsDataURL(this.foto); 
-
+      var me = this;
       this.cargarfoto(this.foto);
     },
     cargarfoto: function cargarfoto(file) {
@@ -5607,23 +5602,7 @@ window.Vue = (__webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js
 
 
 vue__WEBPACK_IMPORTED_MODULE_2__["default"].use((vue_sweetalert2__WEBPACK_IMPORTED_MODULE_0___default()));
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('example-component', (__webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]));
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
+vue__WEBPACK_IMPORTED_MODULE_2__["default"].component('acreditador', (__webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]));
 var app = new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
   el: '#app'
 });
@@ -28636,7 +28615,7 @@ var render = function () {
         "form",
         {
           attrs: { enctype: "multipart/form-data" },
-          on: { submit: _vm.formSubmit },
+          on: { submit: _vm.formSubmitfirebase },
         },
         [
           _c("div", { staticClass: "form-group" }, [

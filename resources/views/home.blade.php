@@ -1,7 +1,7 @@
-@extends('reg')
+@extends('register')
 
-@section('content')
+@section('contentacre')
 <template>
-<example-component></example-component>
+<acreditador></acreditador>
 </template>
 @endsection

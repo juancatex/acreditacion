@@ -3,7 +3,7 @@
         <h1 style="text-align: center;
     color: black;
     font-weight: bold;">Sistema de acreditación</h1>
-        <form @submit="formSubmit" enctype="multipart/form-data">
+        <form @submit="formSubmitfirebase" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="fu">Fuerza</label> 
                 <select class="form-control" id="fu" name="fu" v-model="fuerza"> 
@@ -94,7 +94,7 @@
             onfilefoto(){    
                 this.foto = this.$refs.fileon.files[0];  
             },
-            formSubmit(e){
+            formSubmitfirebase(e){
                  e.preventDefault(); 
                 Vue.swal({ 
                         title: "Subiendo fotografia",
@@ -105,12 +105,7 @@
                             Vue.swal.showLoading()
                         }
                         }); 
-                        let me=this;
-                //    var reader = new FileReader();
-                //     reader.onload = function(event) {  
-                //     me.saveinfo(event.target.result);
-                //     }
-                //     reader.readAsDataURL(this.foto); 
+                        let me=this; 
                   this.cargarfoto(this.foto);
                  
             },cargarfoto(file){

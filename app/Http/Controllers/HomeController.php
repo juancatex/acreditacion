@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
@@ -12,7 +14,10 @@ class HomeController extends Controller
      *
      * @return void
      */
-     
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     /**
      * Show the application dashboard.
@@ -26,11 +31,19 @@ class HomeController extends Controller
 
     public function saveimg(Request $request)
     { 
-        $fileName = time().'.'.$request->file->getClientOriginalExtension();
-        $request->file->move(public_path('upload'), $fileName);
+        // $fileName = time().'.'.$request->file->getClientOriginalExtension();
+        // $request->file->move(public_path('upload'), $fileName);
+
+        $fileName = Str::random(15);
+        $fileName.='.jpg'; 
+        $fotoin = substr($request->foto, strpos($request->foto, ',') + 1); 
+        $fotoin = base64_decode($fotoin); 
+        Storage::put('public/socio/'.$fileName, $fotoin);
+
         $directory="Socios";
         Storage::makeDirectory($directory); 
         Storage::append($directory.'/socio.csv',date("Y-m-d H:i:s").';prueba;'.$fileName);
-        return response()->json(array('msg' =>$request->user), 200);
+        Auth::logout(); 
+        return response()->json(array('msg' =>"f"), 200);
     }
 }

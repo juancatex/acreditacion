@@ -5449,11 +5449,23 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    onfilefoto: function onfilefoto(e) {
-      this.foto = e.target.files[0];
-      console.log(this.foto instanceof File);
+    readFileAsync: function readFileAsync(file) {
+      return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+
+        reader.onload = function () {
+          resolve(reader.result);
+        };
+
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
     },
-    onacreditar: function onacreditar() {
+    onfilefoto: function onfilefoto() {
+      this.foto = this.$refs.fileon.files[0];
+    },
+    formSubmit: function formSubmit(e) {
+      e.preventDefault();
       Vue.swal({
         title: "Registrando acreditación",
         allowOutsideClick: function allowOutsideClick() {
@@ -5466,21 +5478,33 @@ __webpack_require__.r(__webpack_exports__);
           Vue.swal.showLoading();
         }
       });
-      var config = {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
+      var me = this;
+      var reader = new FileReader();
+
+      reader.onload = function (event) {
+        me.saveinfo(event.target.result);
       };
-      var formData = new FormData();
-      formData.append('file', this.foto);
-      formData.append('fuerza', this.fuerza);
-      formData.append('grado', this.grado);
-      formData.append('nombres', this.nombres);
-      formData.append('apaterno', this.apaterno);
-      formData.append('amaterno', this.amaterno);
-      formData.append('ci', this.ci);
-      formData.append('ciext', this.ciext);
-      axios.post('/upimage', formData, config).then(function (response) {
+
+      reader.readAsDataURL(this.foto);
+    },
+    saveinfo: function saveinfo(foto) {
+      // formData.append('fuerza', this.fuerza);
+      // formData.append('grado', this.grado);
+      // formData.append('nombres', this.nombres);
+      // formData.append('apaterno', this.apaterno);
+      // formData.append('amaterno', this.amaterno);
+      // formData.append('ci', this.ci);
+      // formData.append('ciext', this.ciext); 
+      axios.post('/upimage', {
+        foto: foto,
+        fuerza: this.fuerza,
+        grado: this.grado,
+        nombres: this.nombres,
+        apaterno: this.apaterno,
+        amaterno: this.amaterno,
+        ci: this.ci,
+        ciext: this.ciext
+      }).then(function (response) {
         Vue.swal({
           icon: 'success',
           title: 'Registro exitoso',
@@ -28570,237 +28594,15 @@ var render = function () {
         [_vm._v("Sistema de acreditación")]
       ),
       _vm._v(" "),
-      _c("form", [
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "fu" } }, [_vm._v("Fuerza")]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.fuerza,
-                  expression: "fuerza",
-                },
-              ],
-              staticClass: "form-control",
-              attrs: { id: "fu", name: "fu" },
-              on: {
-                change: function ($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function (o) {
-                      return o.selected
-                    })
-                    .map(function (o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.fuerza = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                },
-              },
-            },
-            [
-              _c("option", { attrs: { value: "1" } }, [
-                _vm._v("Armada Boliviana"),
-              ]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "2" } }, [_vm._v("Ejercito")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "3" } }, [_vm._v("Aerea")]),
-            ]
-          ),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "gra" } }, [_vm._v("Grado (abreviado)")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.grado,
-                expression: "grado",
-              },
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: "Ingrese su grado",
-              id: "gra",
-              name: "gra",
-            },
-            domProps: { value: _vm.grado },
-            on: {
-              input: function ($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.grado = $event.target.value
-              },
-            },
-          }),
-          _vm._v(" "),
-          _vm.grado.length == 0
-            ? _c("p", { staticClass: "text-danger" }, [
-                _vm._v("Debe registrar este dato"),
-              ])
-            : _vm._e(),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "nom" } }, [_vm._v("Nombres")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.nombres,
-                expression: "nombres",
-              },
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: "Ingrese su nombre",
-              id: "nom",
-              name: "nom",
-            },
-            domProps: { value: _vm.nombres },
-            on: {
-              input: function ($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.nombres = $event.target.value
-              },
-            },
-          }),
-          _vm._v(" "),
-          _vm.nombres.length == 0
-            ? _c("p", { staticClass: "text-danger" }, [
-                _vm._v("Debe registrar este dato"),
-              ])
-            : _vm._e(),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "ap" } }, [_vm._v("Apellido Paterno")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.apaterno,
-                expression: "apaterno",
-              },
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: "Ingrese su apellido paterno",
-              id: "ap",
-              name: "ap",
-            },
-            domProps: { value: _vm.apaterno },
-            on: {
-              input: function ($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.apaterno = $event.target.value
-              },
-            },
-          }),
-          _vm._v(" "),
-          _vm.apaterno.length == 0
-            ? _c("p", { staticClass: "text-danger" }, [
-                _vm._v("Debe registrar este dato"),
-              ])
-            : _vm._e(),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "am" } }, [_vm._v("Apellido Materno")]),
-          _vm._v(" "),
-          _c("input", {
-            directives: [
-              {
-                name: "model",
-                rawName: "v-model",
-                value: _vm.amaterno,
-                expression: "amaterno",
-              },
-            ],
-            staticClass: "form-control",
-            attrs: {
-              type: "text",
-              placeholder: "Ingrese su apellido materno",
-              id: "am",
-              name: "am",
-            },
-            domProps: { value: _vm.amaterno },
-            on: {
-              input: function ($event) {
-                if ($event.target.composing) {
-                  return
-                }
-                _vm.amaterno = $event.target.value
-              },
-            },
-          }),
-          _vm._v(" "),
-          _vm.amaterno.length == 0
-            ? _c("p", { staticClass: "text-danger" }, [
-                _vm._v("Debe registrar este dato"),
-              ])
-            : _vm._e(),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "number" } }, [
-            _vm._v("Numero de carnet de identidad"),
-          ]),
-          _vm._v(" "),
-          _c("div", [
-            _c("input", {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.ci,
-                  expression: "ci",
-                },
-              ],
-              staticClass: "form-control",
-              staticStyle: { display: "inline-block" },
-              attrs: {
-                type: "number",
-                placeholder: "Ingrese su numero de carnet de identidad",
-                id: "number",
-              },
-              domProps: { value: _vm.ci },
-              on: {
-                input: function ($event) {
-                  if ($event.target.composing) {
-                    return
-                  }
-                  _vm.ci = $event.target.value
-                },
-              },
-            }),
-            _vm._v(" "),
-            _vm.ci.length == 0
-              ? _c("p", { staticClass: "text-danger" }, [
-                  _vm._v("Debe registrar este dato"),
-                ])
-              : _vm._e(),
+      _c(
+        "form",
+        {
+          attrs: { enctype: "multipart/form-data" },
+          on: { submit: _vm.formSubmit },
+        },
+        [
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "fu" } }, [_vm._v("Fuerza")]),
             _vm._v(" "),
             _c(
               "select",
@@ -28809,12 +28611,11 @@ var render = function () {
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.ciext,
-                    expression: "ciext",
+                    value: _vm.fuerza,
+                    expression: "fuerza",
                   },
                 ],
                 staticClass: "form-control",
-                staticStyle: { display: "inline-block" },
                 attrs: { id: "fu", name: "fu" },
                 on: {
                   change: function ($event) {
@@ -28826,84 +28627,315 @@ var render = function () {
                         var val = "_value" in o ? o._value : o.value
                         return val
                       })
-                    _vm.ciext = $event.target.multiple
+                    _vm.fuerza = $event.target.multiple
                       ? $$selectedVal
                       : $$selectedVal[0]
                   },
                 },
               },
               [
-                _c("option", { attrs: { value: "CH" } }, [
-                  _vm._v("Chuquisaca"),
+                _c("option", { attrs: { value: "1" } }, [
+                  _vm._v("Armada Boliviana"),
                 ]),
                 _vm._v(" "),
-                _c("option", { attrs: { value: "LP" } }, [_vm._v("La Paz")]),
+                _c("option", { attrs: { value: "2" } }, [_vm._v("Ejercito")]),
                 _vm._v(" "),
-                _c("option", { attrs: { value: "CB" } }, [
-                  _vm._v("Cochabamba"),
-                ]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "OR" } }, [_vm._v("Oruro")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "PT" } }, [_vm._v("Potosí")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "TJ" } }, [_vm._v("Tarija")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "SC" } }, [
-                  _vm._v("Santa Cruz"),
-                ]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "BE" } }, [_vm._v("Beni")]),
-                _vm._v(" "),
-                _c("option", { attrs: { value: "PD" } }, [_vm._v("Pando")]),
+                _c("option", { attrs: { value: "3" } }, [_vm._v("Aerea")]),
               ]
             ),
           ]),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "form-group" }, [
-          _vm._m(0),
           _vm._v(" "),
-          _c("input", {
-            ref: "fileon",
-            staticClass: "form-control",
-            attrs: {
-              type: "file",
-              accept: "image/*",
-              name: "foto",
-              id: "fileon",
-            },
-            on: { change: _vm.onfilefoto },
-          }),
-          _vm._v(" "),
-          _c(
-            "label",
-            { staticStyle: { color: "#4a36f4", "font-size": "medium" } },
-            [
-              _vm._v(
-                "La fotografía debe ser con el uniforme Nº 3 ARMADA y Nº 4 EJERCITO - AEREA"
-              ),
-            ]
-          ),
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "clearfix" }),
-        _vm._v(" "),
-        _vm.validadatos
-          ? _c(
-              "button",
-              {
-                staticClass: "btn btn-info btn-lg btn-responsive",
-                attrs: { type: "button" },
-                on: { click: _vm.onacreditar },
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "gra" } }, [
+              _vm._v("Grado (abreviado)"),
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.grado,
+                  expression: "grado",
+                },
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                placeholder: "Ingrese su grado",
+                id: "gra",
+                name: "gra",
               },
+              domProps: { value: _vm.grado },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.grado = $event.target.value
+                },
+              },
+            }),
+            _vm._v(" "),
+            _vm.grado.length == 0
+              ? _c("p", { staticClass: "text-danger" }, [
+                  _vm._v("Debe registrar este dato"),
+                ])
+              : _vm._e(),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "nom" } }, [_vm._v("Nombres")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.nombres,
+                  expression: "nombres",
+                },
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                placeholder: "Ingrese su nombre",
+                id: "nom",
+                name: "nom",
+              },
+              domProps: { value: _vm.nombres },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.nombres = $event.target.value
+                },
+              },
+            }),
+            _vm._v(" "),
+            _vm.nombres.length == 0
+              ? _c("p", { staticClass: "text-danger" }, [
+                  _vm._v("Debe registrar este dato"),
+                ])
+              : _vm._e(),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "ap" } }, [_vm._v("Apellido Paterno")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.apaterno,
+                  expression: "apaterno",
+                },
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                placeholder: "Ingrese su apellido paterno",
+                id: "ap",
+                name: "ap",
+              },
+              domProps: { value: _vm.apaterno },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.apaterno = $event.target.value
+                },
+              },
+            }),
+            _vm._v(" "),
+            _vm.apaterno.length == 0
+              ? _c("p", { staticClass: "text-danger" }, [
+                  _vm._v("Debe registrar este dato"),
+                ])
+              : _vm._e(),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "am" } }, [_vm._v("Apellido Materno")]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.amaterno,
+                  expression: "amaterno",
+                },
+              ],
+              staticClass: "form-control",
+              attrs: {
+                type: "text",
+                placeholder: "Ingrese su apellido materno",
+                id: "am",
+                name: "am",
+              },
+              domProps: { value: _vm.amaterno },
+              on: {
+                input: function ($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.amaterno = $event.target.value
+                },
+              },
+            }),
+            _vm._v(" "),
+            _vm.amaterno.length == 0
+              ? _c("p", { staticClass: "text-danger" }, [
+                  _vm._v("Debe registrar este dato"),
+                ])
+              : _vm._e(),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("label", { attrs: { for: "number" } }, [
+              _vm._v("Numero de carnet de identidad"),
+            ]),
+            _vm._v(" "),
+            _c("div", [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.ci,
+                    expression: "ci",
+                  },
+                ],
+                staticClass: "form-control",
+                staticStyle: { display: "inline-block" },
+                attrs: {
+                  type: "number",
+                  placeholder: "Ingrese su numero de carnet de identidad",
+                  id: "number",
+                },
+                domProps: { value: _vm.ci },
+                on: {
+                  input: function ($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.ci = $event.target.value
+                  },
+                },
+              }),
+              _vm._v(" "),
+              _vm.ci.length == 0
+                ? _c("p", { staticClass: "text-danger" }, [
+                    _vm._v("Debe registrar este dato"),
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.ciext,
+                      expression: "ciext",
+                    },
+                  ],
+                  staticClass: "form-control",
+                  staticStyle: { display: "inline-block" },
+                  attrs: { id: "fu", name: "fu" },
+                  on: {
+                    change: function ($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function (o) {
+                          return o.selected
+                        })
+                        .map(function (o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.ciext = $event.target.multiple
+                        ? $$selectedVal
+                        : $$selectedVal[0]
+                    },
+                  },
+                },
+                [
+                  _c("option", { attrs: { value: "CH" } }, [
+                    _vm._v("Chuquisaca"),
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "LP" } }, [_vm._v("La Paz")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "CB" } }, [
+                    _vm._v("Cochabamba"),
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "OR" } }, [_vm._v("Oruro")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "PT" } }, [_vm._v("Potosí")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "TJ" } }, [_vm._v("Tarija")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "SC" } }, [
+                    _vm._v("Santa Cruz"),
+                  ]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "BE" } }, [_vm._v("Beni")]),
+                  _vm._v(" "),
+                  _c("option", { attrs: { value: "PD" } }, [_vm._v("Pando")]),
+                ]
+              ),
+            ]),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _c("input", {
+              ref: "fileon",
+              staticClass: "form-control",
+              attrs: {
+                type: "file",
+                accept: "image/*",
+                name: "foto",
+                id: "fileon",
+              },
+              on: { change: _vm.onfilefoto },
+            }),
+            _vm._v(" "),
+            _c(
+              "label",
+              { staticStyle: { color: "#4a36f4", "font-size": "medium" } },
               [
-                _c("span", { staticClass: "glyphicon glyphicon-ok" }),
-                _vm._v(" Acreditar"),
+                _vm._v(
+                  "La fotografía debe ser con el uniforme Nº 3 ARMADA y Nº 4 EJERCITO - AEREA"
+                ),
               ]
-            )
-          : _vm._e(),
-      ]),
+            ),
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "clearfix" }),
+          _vm._v(" "),
+          _vm.validadatos
+            ? _c(
+                "button",
+                {
+                  staticClass: "btn btn-info btn-lg btn-responsive",
+                  attrs: { type: "submit" },
+                },
+                [
+                  _c("span", { staticClass: "glyphicon glyphicon-ok" }),
+                  _vm._v(" Acreditar"),
+                ]
+              )
+            : _vm._e(),
+        ]
+      ),
     ]
   )
 }

@@ -3,7 +3,7 @@
         <h1 style="text-align: center;
     color: black;
     font-weight: bold;">Sistema de acreditación</h1>
-        <form>
+        <form @submit="formSubmit" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="fu">Fuerza</label> 
                 <select class="form-control" id="fu" name="fu" v-model="fuerza"> 
@@ -60,7 +60,7 @@
             
             
             <div class="clearfix"></div>
-            <button v-if="validadatos" type="button" class="btn btn-info btn-lg btn-responsive" @click="onacreditar" > <span class="glyphicon glyphicon-ok"></span> Acreditar</button>
+            <button v-if="validadatos" type="submit" class="btn btn-info btn-lg btn-responsive"  > <span class="glyphicon glyphicon-ok"></span> Acreditar</button>
         </form>
     </div>
 </template>
@@ -79,57 +79,76 @@
                 foto:"",
             }
         },
-        methods:{
-            onfilefoto(e){   
-                this.foto = e.target.files[0];
-                console.log(this.foto instanceof File);
+        methods: {
+                readFileAsync(file) {
+                    return new Promise((resolve, reject) => {
+                        let reader = new FileReader();
+                        reader.onload = () => {
+                            resolve(reader.result);
+                        };
+                        reader.onerror = reject;
+                        reader.readAsArrayBuffer(file);
+                    })
+                },
+            onfilefoto(){    
+                this.foto = this.$refs.fileon.files[0];  
             },
-            onacreditar(){ 
-                Vue.swal({
-                title: "Registrando acreditación",
-                allowOutsideClick: () => false,
-                allowEscapeKey: () => false,
-                didOpen: () => {
-                   Vue.swal.showLoading() 
-                }
-            }); 
-                const config = {
-                    headers: { 'content-type': 'multipart/form-data' } 
-                } 
-                let formData = new FormData();
-                formData.append('file', this.foto);
-                formData.append('fuerza', this.fuerza);
-                formData.append('grado', this.grado);
-                formData.append('nombres', this.nombres);
-                formData.append('apaterno', this.apaterno);
-                formData.append('amaterno', this.amaterno);
-                formData.append('ci', this.ci);
-                formData.append('ciext', this.ciext); 
-   
-                axios.post('/upimage', formData, config)
-                .then(function (response) { 
-                   Vue.swal({
-                       icon: 'success',
-                       title: 'Registro exitoso',
-                       allowOutsideClick: () => false,
-                       allowEscapeKey: () => false,
-                   }).then((result) => {
-                       window.location.reload(true);
-                   })
-                //    
-                })
-                .catch(function (error) {
-                    console.log("error:",error);
-                     Vue.swal({
-                       icon: 'error',
-                       title: 'Error de registro',
-                       text: error,
-                       allowOutsideClick: () => false,
-                       allowEscapeKey: () => false,
-                   }).then((result) => {
-                       window.location.reload(true);
-                   })
-                });
+            formSubmit(e){
+                 e.preventDefault(); 
+                Vue.swal({ 
+                        title: "Registrando acreditación",
+                        allowOutsideClick: ()=> false,
+                        allowEscapeKey: ()=> false,
+                        didOpen: ()=> {
+                            Vue.swal.showLoading()
+                        }
+                        }); 
+                        let me=this;
+                   var reader = new FileReader();
+                    reader.onload = function(event) {  
+                    me.saveinfo(event.target.result);
+                    }
+                    reader.readAsDataURL(this.foto); 
+            },
+            saveinfo(foto){
+                // formData.append('fuerza', this.fuerza);
+                // formData.append('grado', this.grado);
+                // formData.append('nombres', this.nombres);
+                // formData.append('apaterno', this.apaterno);
+                // formData.append('amaterno', this.amaterno);
+                // formData.append('ci', this.ci);
+                // formData.append('ciext', this.ciext); 
+                            axios.post('/upimage', {
+                                    foto: foto,
+                                    fuerza: this.fuerza,
+                                    grado: this.grado,
+                                    nombres: this.nombres,
+                                    apaterno: this.apaterno,
+                                    amaterno: this.amaterno,
+                                    ci: this.ci,
+                                    ciext: this.ciext
+                                }).then(function (response) {
+                                    Vue.swal({
+                                        icon: 'success',
+                                        title: 'Registro exitoso',
+                                        allowOutsideClick: () => false,
+                                        allowEscapeKey: () => false,
+                                    }).then((result) => {
+                                        window.location.reload(true);
+                                    })
+                                    //    
+                                }).catch(function (error) {
+                                    console.log("error:", error);
+                                    Vue.swal({
+                                        icon: 'error',
+                                        title: 'Error de registro',
+                                        text: error,
+                                        allowOutsideClick: () => false,
+                                        allowEscapeKey: () => false,
+                                    }).then((result) => {
+                                        window.location.reload(true);
+                                    })
+                                });
             }
         },
         computed: {

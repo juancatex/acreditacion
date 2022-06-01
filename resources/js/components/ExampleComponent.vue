@@ -3,7 +3,7 @@
         <h1 style="text-align: center;
     color: black;
     font-weight: bold;">Sistema de acreditación</h1>
-        <form @submit="formSubmitfirebase" enctype="multipart/form-data">
+        <form @submit="formSubmitfirebase" enctype="multipart/form-data"> 
             <div class="form-group">
                 <label for="fu">Fuerza</label> 
                 <select class="form-control" id="fu" name="fu" v-model="fuerza"> 

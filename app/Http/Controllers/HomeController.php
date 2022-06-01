@@ -34,7 +34,7 @@ class HomeController extends Controller
         // $fileName = time().'.'.$request->file->getClientOriginalExtension();
         // $request->file->move(public_path('upload'), $fileName);
 
-        // $fileName = Str::random(15);
+          $fileName = Str::random(15);
         // $fileName.='.jpg'; 
         // $fotoin = substr($request->foto, strpos($request->foto, ',') + 1); 
         // $fotoin = base64_decode($fotoin); 
@@ -42,7 +42,9 @@ class HomeController extends Controller
  
         $directory="public/datos";
         Storage::makeDirectory($directory); 
-        Storage::append($directory.'/socio.csv',date("Y-m-d H:i:s")
+        Storage::append($directory.'/socio.csv',
+        $fileName
+        .';'.date("Y-m-d H:i:s") 
         .';'.$request->fuerza
         .';'.$request->grado
         .';'.$request->nombres
@@ -54,5 +56,11 @@ class HomeController extends Controller
         .';'.$request->ruta);
         Auth::logout(); 
         return response()->json(array('msg' =>"ok"), 200);
+    }
+    public function asdfasdf()
+    { 
+        // $fileName = time().'.'.$request->file->getClientOriginalExtension();
+        // $request->file->move(public_path('upload'), $fileName); 
+       return Str::random(15); 
     }
 }
